@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "/api/loan" });
+const baseURL = `${import.meta.env.VITE_API_BASE_URL ?? ""}/api/loan`;
+
+const api = axios.create({ baseURL });
 
 /** Calculate EMI for given loan params */
 export const fetchEMI = (params) => api.post("/calculate", params);
