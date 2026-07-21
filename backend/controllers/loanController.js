@@ -5,6 +5,7 @@ const {
   aggregateByYear,
   dateToMonthIndex,
 } = require("../utils/loanCalculator");
+const Loan = require("../models/Loan");
 
 // ─── POST /api/loan/calculate ─────────────────────────────────────────────────
 // Returns fixed EMI for given loan params.
@@ -171,6 +172,55 @@ const getPrepaymentImpactController = (req, res) => {
   }
 };
 
+// ─── GET /api/loan/me ──────────────────────────────────────────────────────────
+// Returns the signed-in user's saved loan, or { loan: null } if none saved yet.
+const getMyLoanController = async (req, res) => {
+  try {
+    const loan = await Loan.findOne({ userId: req.userId });
+    return res.json({ loan });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+// ─── PUT /api/loan/me ──────────────────────────────────────────────────────────
+// Upserts the signed-in user's saved loan from the request body.
+const saveMyLoanController = async (req, res) => {
+  try {
+    const {
+      principal,
+      annualRate,
+      tenureMonths,
+      startDate,
+      emiDay,
+      rateChanges = [],
+      prepayments = [],
+    } = req.body;
+
+    const errors = validateBase({ principal, annualRate, tenureMonths });
+    if (errors.length) return res.status(400).json({ errors });
+
+    const loan = await Loan.findOneAndUpdate(
+      { userId: req.userId },
+      {
+        principal: Number(principal),
+        annualRate: Number(annualRate),
+        tenureMonths: Number(tenureMonths),
+        startDate,
+        emiDay: Number(emiDay) || 15,
+        rateChanges,
+        prepayments,
+        updatedAt: new Date(),
+      },
+      { upsert: true, new: true }
+    );
+
+    return res.json({ loan });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function validateBase({ principal, annualRate, tenureMonths }) {
@@ -189,4 +239,6 @@ module.exports = {
   calculateEMIController,
   getScheduleController,
   getPrepaymentImpactController,
+  getMyLoanController,
+  saveMyLoanController,
 };

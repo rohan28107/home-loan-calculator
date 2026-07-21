@@ -117,6 +117,24 @@ export function useLoan() {
     setPrepayments((prev) => prev.filter((p) => p.id !== id));
   };
 
+  // ── Load a saved loan (e.g. fetched after sign-in) ─────────────────────────
+  const loadLoanData = (data) => {
+    if (!data) return;
+    setLoan({
+      principal: data.principal,
+      annualRate: data.annualRate,
+      tenureMonths: data.tenureMonths,
+      startDate: data.startDate,
+      emiDay: data.emiDay,
+    });
+    setRateChanges(
+      (data.rateChanges || []).map((r) => ({ id: Date.now() + Math.random(), ...r }))
+    );
+    setPrepayments(
+      (data.prepayments || []).map((p) => ({ id: Date.now() + Math.random(), ...p }))
+    );
+  };
+
   return {
     loan,
     updateLoan,
@@ -126,6 +144,7 @@ export function useLoan() {
     prepayments,
     addPrepayment,
     removePrepayment,
+    loadLoanData,
     summary,
     schedule,
     impact,

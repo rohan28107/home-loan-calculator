@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLoan } from "./hooks/useLoan";
 import { useTheme } from "./hooks/useTheme";
+import { useAuth } from "./hooks/useAuth";
+import { fetchMyLoan, saveMyLoan } from "./api/loanApi";
 import ThemeToggle from "./components/ThemeToggle";
+import AuthMenu from "./components/AuthMenu";
 import CalculatorTab from "./components/CalculatorTab";
 import RateChangesTab from "./components/RateChangesTab";
 import PrepaymentsTab from "./components/PrepaymentsTab";
@@ -19,12 +22,39 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState("calculator");
   const { theme, toggleTheme } = useTheme();
+  const { user, authError, signUp, signIn, signOut } = useAuth();
   const {
     loan, updateLoan,
     rateChanges, addRateChange, removeRateChange,
     prepayments, addPrepayment, removePrepayment,
+    loadLoanData,
     summary, schedule, impact, loading, error,
   } = useLoan();
+
+  // Load the signed-in user's saved loan whenever a session starts
+  useEffect(() => {
+    if (!user) return;
+    fetchMyLoan()
+      .then((res) => res.data.loan && loadLoanData(res.data.loan))
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // Auto-save the loan while signed in (debounced)
+  const saveTimer = useRef(null);
+  useEffect(() => {
+    if (!user) return;
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveMyLoan({
+        ...loan,
+        rateChanges: rateChanges.map(({ effectiveFrom, rate, note }) => ({ effectiveFrom, rate, note })),
+        prepayments: prepayments.map(({ date, amount, note }) => ({ date, amount, note })),
+      }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(saveTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loan, rateChanges, prepayments]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -37,7 +67,10 @@ export default function App() {
               Floating rate · Prepayments · Full amortisation
             </p>
           </div>
-          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+          <div className="flex items-center gap-2">
+            <AuthMenu user={user} authError={authError} signUp={signUp} signIn={signIn} signOut={signOut} />
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+          </div>
         </div>
 
         {/* API error */}
