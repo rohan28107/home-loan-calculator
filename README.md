@@ -1,6 +1,6 @@
 # Home Loan Tracker
 
-Full-stack home loan EMI calculator with floating rate support and prepayment tracking.
+A Full-Stack Home Loan EMI calculator with floating-rate support and prepayment tracking. Features JWT auth, an EMI engine handling rate changes and prepayments with full amortisation schedules, prepayment impact analysis, and an interactive dashboard with charts.
 
 ## Stack
 - **Frontend**: React 18 + Vite + Tailwind CSS + Recharts
