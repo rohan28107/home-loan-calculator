@@ -45,6 +45,12 @@ home-loan-tracker/
             ├── ScheduleTab.jsx     # Amortisation table
             └── SummaryTab.jsx      # Side-by-side comparison + progress
 ```
+---
+
+## Screenshots:
+<img width="842" height="901" alt="image" src="https://github.com/user-attachments/assets/40e2a172-60fc-4726-9c77-82e7acc21e6e" />
+<img width="832" height="747" alt="image" src="https://github.com/user-attachments/assets/8de06d6f-0db2-45ad-b758-fd32329b0a2b" />
+<img width="840" height="721" alt="image" src="https://github.com/user-attachments/assets/ea622334-ddfa-4894-81d8-3ac4efe7dd22" />
 
 ---
 
