@@ -163,6 +163,7 @@ Prepayment impact compared to baseline (no prepayments).
 ```
 ---
 ## Architecture
+## Click Here!!! For Interactive Chart → [![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/rohan28107/home-loan-calculator?utm_source=readme&utm_medium=badge)
 <img width="8060" height="9615" alt="diagram" src="https://github.com/user-attachments/assets/575f8a8d-1602-4608-b434-a018b320822e" />
 
 ---
