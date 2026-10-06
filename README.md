@@ -161,6 +161,9 @@ Prepayment impact compared to baseline (no prepayments).
   "newTenure": 222
 }
 ```
+---
+## Architecture
+<img width="8060" height="9615" alt="diagram" src="https://github.com/user-attachments/assets/575f8a8d-1602-4608-b434-a018b320822e" />
 
 ---
 
